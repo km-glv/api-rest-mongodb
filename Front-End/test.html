@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Conexión API</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .info { background-color: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test de Conexión API</h1>
+    
+    <button onclick="testConnection()">🔗 Probar Conexión</button>
+    <button onclick="testRegister()">📝 Probar Registro</button>
+    <button onclick="testLogin()">🔐 Probar Login</button>
+    
+    <div id="results"></div>
+
+    <script>
+        const API_BASE = 'http://localhost:7000/api';
+        
+        function addResult(message, type = 'info') {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.textContent = message;
+            results.appendChild(div);
+        }
+        
+        async function testConnection() {
+            addResult('🔍 Probando conexión con el backend...', 'info');
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: 'test', password: 'test' })
+                });
+                
+                if (response.status === 400 || response.status === 404) {
+                    addResult('✅ Backend está respondiendo correctamente', 'success');
+                } else {
+                    addResult(`📡 Backend responde con status: ${response.status}`, 'info');
+                }
+            } catch (error) {
+                addResult(`❌ Error de conexión: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testRegister() {
+            addResult('📝 Creando usuario de prueba...', 'info');
+            try {
+                const response = await fetch(`${API_BASE}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        nombre: 'Usuario Test Frontend',
+                        email: 'frontend@test.com',
+                        password: '123456'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    addResult('✅ Usuario creado exitosamente', 'success');
+                } else {
+                    addResult(`⚠️ Error al crear usuario: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Error en registro: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testLogin() {
+            addResult('🔐 Probando login...', 'info');
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: 'frontend@test.com',
+                        password: '123456'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    addResult('✅ Login exitoso!', 'success');
+                    addResult(`🔑 Token recibido: ${data.token.substring(0, 20)}...`, 'info');
+                    localStorage.setItem('authToken', data.token);
+                } else {
+                    addResult(`❌ Error en login: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Error en login: ${error.message}`, 'error');
+            }
+        }
+    </script>
+</body>
+</html>

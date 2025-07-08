@@ -11,6 +11,20 @@ import pedidosRouter from './routes/pedidos.js';
 import express from 'express'; //servidor web
 const app = express(); //todo lo que pase en la web pasa por la const
 
+// Configurar CORS - DEBE IR ANTES de las rutas
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*'); // Permitir cualquier origen
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    
+    // Responder a peticiones OPTIONS (preflight)
+    if (req.method === 'OPTIONS') {
+        res.sendStatus(200);
+    } else {
+        next();
+    }
+});
+
 // Configurar middleware ANTES de las rutas
 app.use(express.json()); //para que el servidor entienda los datos en formato JSON
 

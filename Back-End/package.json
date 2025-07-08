@@ -1,16 +1,15 @@
 {
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "dotenv": "^17.1.0",
     "express": "^5.1.0",
-    "mongoose": "^8.16.2",
     "jsonwebtoken": "^9.0.2",
-    "bcryptjs": "^2.4.3"
+    "mongoose": "^8.16.2"
   },
   "name": "nueva-carpeta",
   "version": "1.0.0",
   "main": "index.js",
-  "devDependencies": {},
-  "type":"module",
+  "type": "module",
   "scripts": {
     "start": "node index.js",
     "test": "echo \"No tests specified yet\""
