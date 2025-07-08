@@ -9,16 +9,19 @@ import productosRouter from './routes/productos.js';
 import pedidosRouter from './routes/pedidos.js';
 
 import express from 'express'; //servidor web
-import clientesRouter from './routes/clientes.js';
+const app = express(); //todo lo que pase en la web pasa por la const
 
-app.use('/api/clientes', authMiddleware, clientesRouter);
+// Configurar middleware ANTES de las rutas
+app.use(express.json()); //para que el servidor entienda los datos en formato JSON
+
+// Configurar rutas - DESPUÉS del middleware
+app.use('/api/auth', authRouter); // SIN autenticación (para login/register)
 app.use('/api/clientes', authMiddleware, clientesRouter);
 app.use('/api/productos', authMiddleware, productosRouter);
 app.use('/api/pedidos', authMiddleware, pedidosRouter);
 
 
 // agrear pedidosRouter, productoRouter, etc
-const app = express(); //todo lo que pase en la web pasa por la const
 const PORT = process.env.PORT || 3000; //lee la carpeta PORT local y solo funciona importando dotenv
 mongoose.connect(process.env.MONGO_URI)
     .then(()=>{ //then = if
@@ -29,14 +32,11 @@ mongoose.connect(process.env.MONGO_URI)
         process.exit(1);
     });
 
-
-app.listen(PORT);
+// app.listen es el servidor que escucha las peticiones
 app.listen(PORT, ()=>{
     console.log(`servidor esta corriendo en el puerto ${PORT}`); // Alt gr + `` para agregar variables, tambien usar ${VARIABLE}
 });
 
-app.use(express.json())
-app.use('/api/clientes/', clientesRouter);
 
 app.get('/',(req, res)=>{ //request y respuesta desde la raiz //=> es igual a ..
     res.send('<H1>Funcionó</H1> !! <br>Bienvenido'); //send envia el mensaje a la pagina

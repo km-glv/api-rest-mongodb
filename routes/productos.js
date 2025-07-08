@@ -86,7 +86,7 @@ route.put('/:id', async (req, res)=>{ // Actualizar producto
     }
 });
 
-router.delete('/:id', async (req, res) => { // Eliminar producto
+route.delete('/:id', async (req, res) => { // Eliminar producto
     try {
         const productoEliminado = await Producto.findByIdAndDelete(req.params.id);
         if (!productoEliminado) return res.status(404).json({ message: 'Producto no encontrado' });

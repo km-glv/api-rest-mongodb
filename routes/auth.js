@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import {Router} from 'express';
 import Usuario from '../models/Usuario.js';
 import jwt from 'jsonwebtoken';
@@ -5,6 +8,12 @@ import jwt from 'jsonwebtoken';
 const router = Router();
 // Obtiene clave secreta JWT
 const JWT_SECRET = process.env.JWT_SECRET;
+
+// Validar que JWT_SECRET existe
+if (!JWT_SECRET) {
+    console.error('ERROR: JWT_SECRET no está definido en el archivo .env');
+    process.exit(1);
+}
 
 router.post('/register', async (req, res)=>{ // Registro de usuario
     const { email, password } = req.body;

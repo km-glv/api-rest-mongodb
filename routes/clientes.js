@@ -12,29 +12,29 @@ route.post('/', async (req, res)=>{ // POST crea cliente
         direccion: req.body.direccion
     });
     try{
-        const nuevoCliente = await Cliente.save();
+        const nuevoCliente = await cliente.save();
         res.status(201).json(nuevoCliente);
     } catch(error){
-        res.status(400).json({'mensaje error':error.massage});
+        res.status(400).json({'mensaje error':error.message});
     }
 })
 // GET consulta clientes
 route.get('/', async (req, res)=>{ //async para que el codigo no trabaje de forma lineal
     try{
         const filtro={};
-        if (req.params.nombre){
-            filtro.nombre = {regex: req.query.nombre, $option: 'i'} // si viene un parametro nombre, filtra el nombre
+        if (req.query.nombre){
+            filtro.nombre = {$regex: req.query.nombre, $options: 'i'} // si viene un parametro nombre, filtra el nombre
         }
 
-        if (req.params.apellido){
-            filtro.apellido = {regex: req.query.apellido, $option: 'i'}
+        if (req.query.apellido){
+            filtro.apellido = {$regex: req.query.apellido, $options: 'i'}
         }
 
-        if (req.params.email){
-            filtro.email = {regex: req.query.email, $option: 'i'}
+        if (req.query.email){
+            filtro.email = {$regex: req.query.email, $options: 'i'}
         }
          
-        const clientes = await Cliente.find(); //ejecuta un find en la tabla Clientes y lo almaneca en la variable clientes
+        const clientes = await Cliente.find(filtro); //ejecuta un find en la tabla Clientes y lo almaneca en la variable clientes
         res.status(200).json(clientes); //entrega la informacion del find en la variable clientes en formato JSON
     } catch(error){
         res.status(500).json({message: error.message});
