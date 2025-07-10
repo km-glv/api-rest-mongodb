@@ -1,12 +1,5 @@
 /* ===============================================
-        // Si el token expiró, redirigir al login
-        if (response.status === 401) {
-            console.log('🔒 Token expirado, redirigiendo al login...');
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('user');
-            window.location.href = 'login.html';
-            return;
-        }GURACIÓN DE LA API
+   CONFIGURACIÓN DE LA API
    =============================================== */
 
 // URL base de tu API backend
@@ -54,12 +47,12 @@ async function apiRequest(url, options = {}) {
     };
     
     try {
-        console.log(`🌐 API Request: ${options.method || 'GET'} ${url}`);
+        console.log(` API Request: ${options.method || 'GET'} ${url}`);
         const response = await fetch(url, config);
         
         // Si el token expiró o es inválido, redirigir al login
         if (response.status === 401) {
-            console.log('🔒 Token expirado, redirigiendo al login...');
+            console.log('Token expirado, redirigiendo al login...');
             localStorage.removeItem('authToken');
             localStorage.removeItem('user');
             window.location.href = 'index.html';
@@ -68,7 +61,7 @@ async function apiRequest(url, options = {}) {
         
         return response;
     } catch (error) {
-        console.error('❌ Error en petición API:', error);
+        console.error('Error en petición API:', error);
         throw error;
     }
 }
@@ -189,8 +182,8 @@ function getCurrentUser() {
 function logout() {
     localStorage.removeItem('authToken');
     localStorage.removeItem('user');
-    console.log('🚪 Sesión cerrada correctamente');
-    window.location.href = 'login.html';
+    console.log('Sesión cerrada correctamente');
+    window.location.href = 'home.html'; // Redirigir a la página de inicio o login
 }
 
-console.log('🔧 API Client configurado correctamente');
+console.log('API Client configurado correctamente');

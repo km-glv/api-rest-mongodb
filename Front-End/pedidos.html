@@ -1,14 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Pedidos - API REST</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles_pedidos.css">
 </head>
 <body>
-    <h1>entraste a seccion pedidos</h1>
-    <button onclick="window.location.href='dashboard.html'">volver dashboard</button>
-    <button onclick="window.location.href='clientes.html'">ir a clientes</button>
-    <button onclick="window.location.href='productos.html'">ir a productos</button>
+
+    <nav>
+        <div class="nav-brand">🏢 API REST Dashboard</div>
+        <ul class="nav-menu">
+            <li><button class="btn btn-primary" onclick="window.location.href='dashboard.html'">Volver al Dashboard</button></li>
+            <li><button class="btn btn-primary" onclick="window.location.href='clientes.html'">Clientes</button></li>
+            <li><button class="btn btn-primary" onclick="window.location.href='productos.html'">Productos</button></li>
+            <li><button class="btn btn-secondary" onclick="logout()">Cerrar Sesión</button></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <!-- TARJETA PRINCIPAL -->
+        <div class="welcome-card">
+            <h1>🛒 Gestión de Pedidos</h1>
+            <p>En esta sección puedes gestionar los pedidos de tus clientes.</p>
+            
+            <div class="actions">
+                <button class="btn btn-primary" onclick="createOrder()">Crear Pedido</button>
+                <button class="btn btn-secondary" onclick="fetchOrders()">Ver Pedidos</button>
+            </div>
+        </div>
+
+        <!-- TARJETA DE LISTADO -->
+        <div class="welcome-card">
+            <h2>📋 Lista de Pedidos</h2>
+            <div id="ordersList" class="orders-list">
+                <!-- Aquí se mostrarán los pedidos -->
+                <p style="color: #666; text-align: center;">No hay pedidos para mostrar</p>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

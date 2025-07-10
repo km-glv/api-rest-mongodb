@@ -2,18 +2,36 @@
    LÓGICA DE AUTENTICACIÓN
    =============================================== */
 
-console.log('🔑 Módulo de autenticación cargado');
+console.log('Módulo de autenticación cargado');
 
 // Verificar si ya está logueado al cargar la página
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('📄 Página de login cargada, verificando autenticación...');
+    console.log('Página cargada, verificando configuración...');
     
-    if (isAuthenticated()) {
-        console.log('✅ Usuario ya autenticado, redirigiendo al dashboard...');
-        window.location.href = 'dashboard.html';
+    // Verificar si estamos en la página de login
+    if (document.getElementById('loginForm')) {
+        console.log('Página de login detectada');
+        if (isAuthenticated()) {
+            console.log('Usuario ya autenticado, redirigiendo al dashboard...');
+            window.location.href = 'dashboard.html';
+        }
+        setupLoginForm();
     }
     
-    setupLoginForm();
+    // Verificar si estamos en la página de registro
+    if (document.getElementById('registerForm')) {
+        console.log('Página de registro detectada');
+        if (isAuthenticated()) {
+            console.log('Usuario ya autenticado, redirigiendo al dashboard...');
+            window.location.href = 'dashboard.html';
+        }
+        setupRegisterForm();
+    }
+    
+    // Si no hay formularios, es otra página
+    if (!document.getElementById('loginForm') && !document.getElementById('registerForm')) {
+        console.log('Página sin formularios detectada');
+    }
 });
 
 /* ===============================================
@@ -24,12 +42,12 @@ function setupLoginForm() {
     const loginBtn = document.getElementById('loginBtn');
     
     if (!loginForm) {
-        console.error('❌ No se encontró el formulario de login');
+        console.error('No se encontró el formulario de login');
         return;
     }
     
     loginForm.addEventListener('submit', handleLogin);
-    console.log('📝 Formulario de login configurado');
+    console.log('Formulario de login configurado');
 }
 
 /* ===============================================
@@ -38,7 +56,7 @@ function setupLoginForm() {
 async function handleLogin(event) {
     event.preventDefault(); // Evitar que se recargue la página
     
-    console.log('🚀 Iniciando proceso de login...');
+    console.log('Iniciando proceso de login...');
     
     // Obtener datos del formulario
     const email = document.getElementById('email').value;
@@ -54,19 +72,19 @@ async function handleLogin(event) {
     setLoadingState(true);
     
     try {
-        // 🌐 COMUNICACIÓN CON TU BACKEND
+        // 🌐 COMUNICACIÓN CON BACKEND
         // Esto llama a: POST http://localhost:3000/api/auth/login
-        console.log('🌐 Enviando credenciales al backend...');
+        console.log('Enviando credenciales al backend...');
         
         const loginData = {
             email: email,
             password: password
         };
         
-        // Hacer petición a tu API de login
+        // Hacer petición a la API de login
         const response = await apiPost('/auth/login', loginData);
         
-        console.log('✅ Login exitoso:', response);
+        console.log('Login exitoso:', response);
         
         // Guardar token
         localStorage.setItem('authToken', response.token);
@@ -100,6 +118,103 @@ async function handleLogin(event) {
 }
 
 /* ===============================================
+   CONFIGURAR FORMULARIO DE REGISTRO
+   =============================================== */
+function setupRegisterForm() {
+    const registerForm = document.getElementById('registerForm');
+    
+    if (!registerForm) {
+        console.error('No se encontró el formulario de registro');
+        return;
+    }
+    
+    registerForm.addEventListener('submit', handleRegister);
+    console.log('Formulario de registro configurado');
+}
+
+/* ===============================================
+   MANEJAR PROCESO DE REGISTRO
+   =============================================== */
+async function handleRegister(event) {
+    event.preventDefault(); // Evitar que se recargue la página
+    
+    console.log('Iniciando proceso de registro...');
+    
+    // Obtener datos del formulario
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    
+    // Validaciones básicas
+    if (!name || !email || !password || !confirmPassword) {
+        showMessage('Por favor, completa todos los campos', 'error');
+        return;
+    }
+    
+    // Validar que las contraseñas coincidan
+    if (password !== confirmPassword) {
+        showMessage('Las contraseñas no coinciden', 'error');
+        return;
+    }
+    
+    // Validar longitud mínima de contraseña
+    if (password.length < 6) {
+        showMessage('La contraseña debe tener al menos 6 caracteres', 'error');
+        return;
+    }
+    
+    // Deshabilitar botón mientras se procesa
+    const registerBtn = document.getElementById('registerBtn');
+    const originalText = registerBtn.textContent;
+    registerBtn.textContent = '⏳ Creando cuenta...';
+    registerBtn.disabled = true;
+    
+    try {
+        // Hacer petición al backend
+        console.log('📡 Enviando datos de registro al servidor...');
+        
+        const userData = {
+            nombre: name,
+            email: email,
+            password: password
+        };
+        
+        const response = await apiPost('/auth/register', userData);
+        
+        console.log('Registro exitoso:', response);
+        
+        // Mostrar mensaje de éxito
+        showMessage('¡Cuenta creada exitosamente! Redirigiendo al login...', 'success');
+        
+        // Redirigir al login después de 2 segundos
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 2000);
+        
+    } catch (error) {
+        console.error('Error en el registro:', error);
+        
+        let errorMessage = 'Error al crear la cuenta. ';
+        
+        if (error.message.includes('email')) {
+            errorMessage += 'El email ya está registrado.';
+        } else if (error.message.includes('validation')) {
+            errorMessage += 'Datos inválidos.';
+        } else {
+            errorMessage += 'Inténtalo de nuevo.';
+        }
+        
+        showMessage(errorMessage, 'error');
+        
+    } finally {
+        // Rehabilitar botón
+        registerBtn.textContent = originalText;
+        registerBtn.disabled = false;
+    }
+}
+
+/* ===============================================
    FUNCIONES DE UTILIDAD
    =============================================== */
 
@@ -112,7 +227,7 @@ function showMessage(message, type = 'info') {
     const messageArea = document.getElementById('messageArea');
     
     if (!messageArea) {
-        console.warn('⚠️ No se encontró el área de mensajes');
+        console.warn('No se encontró el área de mensajes');
         alert(message);
         return;
     }
@@ -135,7 +250,7 @@ function showMessage(message, type = 'info') {
         }, 5000);
     }
     
-    console.log(`💬 Mensaje mostrado: ${type} - ${message}`);
+    console.log(`Mensaje mostrado: ${type} - ${message}`);
 }
 
 /**
@@ -147,11 +262,11 @@ function setLoadingState(loading) {
     const form = document.getElementById('loginForm');
     
     if (loading) {
-        loginBtn.textContent = '⏳ Verificando...';
+        loginBtn.textContent = 'Verificando...';
         loginBtn.disabled = true;
         form.classList.add('loading');
     } else {
-        loginBtn.textContent = '🚀 Iniciar Sesión';
+        loginBtn.textContent = 'Iniciar Sesión';
         loginBtn.disabled = false;
         form.classList.remove('loading');
     }
@@ -164,15 +279,15 @@ function setLoadingState(loading) {
 // Función para probar la conexión con la API
 async function testApiConnection() {
     try {
-        console.log('🔍 Probando conexión con la API...');
+        console.log('Probando conexión con la API...');
         const response = await fetch(`${API_CONFIG.BASE_URL}/auth/test`);
-        console.log('📡 Estado de la API:', response.status);
+        console.log('Estado de la API:', response.status);
     } catch (error) {
-        console.error('❌ Error de conexión:', error);
+        console.error('Error de conexión:', error);
     }
 }
 
-// Ejecutar test al cargar (solo en modo desarrollo)
+// Ejecutar test al cargar (solo en modo desarrollo, osea ahora mismo)
 if (window.location.hostname === 'localhost') {
     testApiConnection();
 }

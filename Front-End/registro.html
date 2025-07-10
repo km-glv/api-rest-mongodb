@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+    <link rel="stylesheet" href="css/styles_registro.css">
+</head>
+<body>
+    <!-- BARRA DE NAVEGACIÓN -->
+    <nav>
+        <div class="nav-brand">Rest API</div>
+        <div class="nav-menu">
+            <button onclick="window.location.href='home.html'">Inicio</button>
+        </div>
+    </nav>
+
+    <!-- CONTENEDOR DE REGISTRO -->
+    <div class="registration-container">
+        <div class="registration-form">
+            <!-- TÍTULO -->
+            <h1>Crear Cuenta Nueva</h1>
+            
+            <!-- FORMULARIO DE REGISTRO -->
+            <form id="registerForm">
+                <!-- NOMBRE -->
+                <!-- NOMBRE -->
+                <div class="form-group">
+                    <label for="name">Nombre completo:</label>
+                    <input 
+                        type="text" 
+                        id="name" 
+                        name="name" 
+                        class="form-control"
+                        placeholder="Tu nombre completo"
+                        required
+                    >
+                </div>
+                
+                <!-- EMAIL -->
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        class="form-control"
+                        placeholder="tu@email.com"
+                        required
+                    >
+                </div>
+                
+                <!-- CONTRASEÑA -->
+                <div class="form-group">
+                    <label for="password">Contraseña:</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        class="form-control"
+                        placeholder="Mínimo 6 caracteres"
+                        required
+                        minlength="6"
+                    >
+                </div>
+                
+                <!-- CONFIRMAR CONTRASEÑA -->
+                <div class="form-group">
+                    <label for="confirmPassword">Confirmar Contraseña:</label>
+                    <input 
+                        type="password" 
+                        id="confirmPassword" 
+                        name="confirmPassword" 
+                        class="form-control"
+                        placeholder="Repite tu contraseña"
+                        required
+                        minlength="6"
+                    >
+                </div>
+                
+                <!-- BOTÓN DE REGISTRO -->
+                <button type="submit" class="btn btn-primary" id="registerBtn">
+                    Crear Cuenta
+                </button>
+            </form>
+            
+            <!-- ÁREA DE MENSAJES -->
+            <div id="messageArea"></div>
+            
+            <!-- ENLACE PARA LOGIN -->
+            <div class="mt-20 text-center">
+                <p>¿Ya tienes cuenta? <a href="login.html" style="color: #667eea; text-decoration: none;">Iniciar sesión</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+</html>
