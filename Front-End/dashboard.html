@@ -11,10 +11,10 @@
     <div class="dashboard-container">
         <!-- NAVBAR -->
         <nav class="navbar">
-            <div class="nav-brand">🏢 API REST Dashboard</div>
+            <div class="nav-brand">API REST Dashboard</div>
             <ul class="nav-menu">
                 <li><span id="userWelcome">Bienvenido</span></li>
-                <li><button class="btn btn-secondary" onclick="logout()">🚪 Cerrar Sesión</button></li>
+                <li><button class="btn btn-secondary" onclick="logout()">Cerrar Sesión</button></li>
             </ul>
         </nav>
 
@@ -22,9 +22,9 @@
         <div class="main-content">
             <!-- TARJETA DE BIENVENIDA -->
             <div class="welcome-card">
-                <h1>🎉 ¡Bienvenido al Sistema!</h1>
+                <h1>¡Bienvenido al Sistema!</h1>
                 <p>Has iniciado sesión exitosamente. Aquí puedes gestionar clientes, productos y pedidos.</p>
-                <p><strong>Token JWT:</strong> <span id="tokenStatus">✅ Activo</span></p>
+                <p><strong>Token JWT:</strong> <span id="tokenStatus">Activo</span></p>
             </div>
 
             <!-- ESTADÍSTICAS -->
@@ -52,7 +52,7 @@
             </div>
 
             <!-- ACCIONES RÁPIDAS -->
-            <h2 style="color: white; text-align: center; margin: 2rem 0;">🚀 Acciones Rápidas</h2>
+            <h2 style="color: white; text-align: center; margin: 2rem 0;">Acciones Rápidas</h2>
             <div class="quick-actions">
                 <a href="clientes.html" class="action-card">
                     <div class="action-icon">👥</div>
@@ -76,6 +76,12 @@
                     <div class="action-icon">🔧</div>
                     <h3>Probar API</h3>
                     <p>Verificar conexión</p>
+                </div>
+                
+                <div class="action-card" onclick="refreshStats()">
+                    <div class="action-icon">🔄</div>
+                    <h3>Actualizar Stats</h3>
+                    <p>Refrescar contadores</p>
                 </div>
             </div>
 
@@ -111,10 +117,16 @@
         // Cargar datos del dashboard
         async function loadDashboardData() {
             try {
+                // Mostrar indicadores de carga
+                document.getElementById('clientesCount').textContent = '...';
+                document.getElementById('productosCount').textContent = '...';
+                document.getElementById('pedidosCount').textContent = '...';
+                
                 // Mostrar información del usuario
                 const user = getCurrentUser();
                 if (user) {
-                    document.getElementById('userWelcome').textContent = `👋 Hola, ${user.nombre || user.email}`;
+                    const userName = user.nombre || user.email || 'Usuario';
+                    document.getElementById('userWelcome').textContent = `Hola, ${userName}`;
                     document.getElementById('currentUser').textContent = user.email;
                 }
 
@@ -124,7 +136,7 @@
                     document.getElementById('tokenInfo').textContent = `${token.substring(0, 20)}...`;
                 }
 
-                // Cargar estadísticas (simuladas por ahora)
+                // Cargar estadísticas reales
                 await loadStats();
                 
             } catch (error) {
@@ -136,16 +148,60 @@
         // Cargar estadísticas
         async function loadStats() {
             try {
-                // Por ahora simulamos los datos
-                document.getElementById('clientesCount').textContent = '0';
-                document.getElementById('productosCount').textContent = '0';
-                document.getElementById('pedidosCount').textContent = '0';
+                console.log('📊 Cargando estadísticas...');
                 
-                addDebugMessage('Estadísticas cargadas correctamente', 'success');
+                // Cargar clientes
+                let clientesCount = 0;
+                try {
+                    const clientes = await apiGet('/clientes');
+                    clientesCount = Array.isArray(clientes) ? clientes.length : 0;
+                    document.getElementById('clientesCount').textContent = clientesCount;
+                    console.log(`✅ ${clientesCount} clientes cargados`);
+                } catch (error) {
+                    console.error('❌ Error cargando clientes:', error);
+                    document.getElementById('clientesCount').textContent = 'Error';
+                }
+                
+                // Cargar productos
+                let productosCount = 0;
+                try {
+                    const productos = await apiGet('/productos');
+                    productosCount = Array.isArray(productos) ? productos.length : 0;
+                    document.getElementById('productosCount').textContent = productosCount;
+                    console.log(`✅ ${productosCount} productos cargados`);
+                } catch (error) {
+                    console.error('❌ Error cargando productos:', error);
+                    document.getElementById('productosCount').textContent = 'Error';
+                }
+                
+                // Cargar pedidos
+                let pedidosCount = 0;
+                try {
+                    const pedidos = await apiGet('/pedidos');
+                    pedidosCount = Array.isArray(pedidos) ? pedidos.length : 0;
+                    document.getElementById('pedidosCount').textContent = pedidosCount;
+                    console.log(`✅ ${pedidosCount} pedidos cargados`);
+                } catch (error) {
+                    console.error('❌ Error cargando pedidos:', error);
+                    document.getElementById('pedidosCount').textContent = 'Error';
+                }
+                
+                // Mostrar resumen
+                const totalItems = clientesCount + productosCount + pedidosCount;
+                if (totalItems > 0) {
+                    addDebugMessage(`📈 Stats: ${clientesCount} clientes, ${productosCount} productos, ${pedidosCount} pedidos`, 'success');
+                } else {
+                    addDebugMessage('📊 No hay datos disponibles o error en la conexión', 'warning');
+                }
                 
             } catch (error) {
                 console.error('❌ Error cargando estadísticas:', error);
-                addDebugMessage('Error cargando estadísticas', 'error');
+                addDebugMessage('Error cargando estadísticas: ' + error.message, 'error');
+                
+                // Mostrar error en los contadores
+                document.getElementById('clientesCount').textContent = 'Error';
+                document.getElementById('productosCount').textContent = 'Error';
+                document.getElementById('pedidosCount').textContent = 'Error';
             }
         }
 
@@ -164,9 +220,23 @@
             try {
                 const response = await apiGet('/clientes');
                 addDebugMessage('✅ API funcionando correctamente', 'success');
+                console.log('✅ Test API exitoso:', response);
             } catch (error) {
                 addDebugMessage(`❌ Error en API: ${error.message}`, 'error');
+                console.error('❌ Test API falló:', error);
             }
+        }
+
+        // Refrescar estadísticas
+        async function refreshStats() {
+            addDebugMessage('🔄 Actualizando estadísticas...', 'info');
+            
+            // Mostrar indicadores de carga
+            document.getElementById('clientesCount').textContent = '...';
+            document.getElementById('productosCount').textContent = '...';
+            document.getElementById('pedidosCount').textContent = '...';
+            
+            await loadStats();
         }
 
         // Agregar mensajes de debug

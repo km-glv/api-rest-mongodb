@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="css/styles_pedidos.css">
 </head>
 <body>
-
     <nav>
         <div class="nav-brand">🏢 API REST Dashboard</div>
         <ul class="nav-menu">
@@ -26,8 +25,52 @@
             <p>En esta sección puedes gestionar los pedidos de tus clientes.</p>
             
             <div class="actions">
-                <button class="btn btn-primary" onclick="createOrder()">Crear Pedido</button>
-                <button class="btn btn-secondary" onclick="fetchOrders()">Ver Pedidos</button>
+                <button class="btn btn-primary" onclick="toggleOrderForm()">Crear Pedido</button>
+                <button class="btn btn-secondary" onclick="loadOrders()">Ver Pedidos</button>
+            </div>
+            
+            <!-- FORMULARIO DE NUEVO PEDIDO -->
+            <div id="orderForm" class="order-form">
+                <h3>📝 Nuevo Pedido</h3>
+                <form id="newOrderForm">
+                    <!-- Selección de Cliente -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="orderClient">Cliente:</label>
+                            <select id="orderClient" name="cliente" class="form-control" required>
+                                <option value="">Selecciona un cliente...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="orderStatus">Estado:</label>
+                            <select id="orderStatus" name="estado" class="form-control" required>
+                                <option value="Pendiente">Pendiente</option>
+                                <option value="Procesando">Procesando</option>
+                                <option value="Enviado">Enviado</option>
+                                <option value="Cancelado">Cancelado</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Productos del Pedido -->
+                    <div class="products-section">
+                        <h4>🛍️ Productos del Pedido</h4>
+                        <div id="orderProducts" class="order-products">
+                            <!-- Los productos se agregarán dinámicamente aquí -->
+                        </div>
+                        <button type="button" class="btn btn-info" onclick="addProductToOrder()">+ Añadir Producto</button>
+                    </div>
+                    
+                    <!-- Total del Pedido -->
+                    <div class="order-total">
+                        <h4>💰 Total del Pedido: $<span id="orderTotalAmount">0</span></h4>
+                    </div>
+                    
+                    <div class="form-buttons">
+                        <button type="button" class="btn btn-secondary" onclick="toggleOrderForm()">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Pedido</button>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -36,9 +79,18 @@
             <h2>📋 Lista de Pedidos</h2>
             <div id="ordersList" class="orders-list">
                 <!-- Aquí se mostrarán los pedidos -->
-                <p style="color: #666; text-align: center;">No hay pedidos para mostrar</p>
+                <div class="empty-state">
+                    <div class="empty-state-icon">🛒</div>
+                    <p>No hay pedidos para mostrar</p>
+                    <button class="btn btn-primary" onclick="loadOrders()">Cargar Pedidos</button>
+                </div>
             </div>
         </div>
     </div>
+    
+    <!-- SCRIPTS -->
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/pedidos.js"></script>
 </body>
 </html>

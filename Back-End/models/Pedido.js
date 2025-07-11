@@ -6,11 +6,6 @@ const pedidoSchema = new mongoose.Schema({
         ref: 'Cliente', //tabla de donde saca los datos
         required: true
     },
-    producto: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Producto',
-        required: true
-    },
     productos:[
         {
             producto:{
@@ -34,25 +29,10 @@ const pedidoSchema = new mongoose.Schema({
         enum: ['Pendiente', 'Procesando', 'Enviado', 'Cancelado'], //estados posibles del pedido
         default: 'Pendiente'
     },
-    cantidad: {
-        type: Number,
-        required: true,
-        min: 1
-    },
-    precioUnitario: {
-        type: Number,
-        required: true,
-        min: 1
-    },
-    subTotal: {
-        type: Number,
-        required: true,
-        min: 1
-    },
     total:{
         type: Number,
         required: true,
-        min: 1
+        min: 0
     }
 })
 
