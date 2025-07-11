@@ -1,14 +1,82 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Productos - API REST</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles_productos.css">
 </head>
 <body>
-    <h1>entraste a seccion productos</h1>
-    <button onclick="window.location.href='dashboard.html'">volver dashboard</button>
-    <button onclick="window.location.href='clientes.html'">ir a clientes</button>
-    <button onclick="window.location.href='pedidos.html'">ir a pedidos</button>
+    <nav>
+        <div class="nav-brand">🏢 API REST Dashboard</div>
+        <ul class="nav-menu">
+            <li><button class="btn btn-primary" onclick="window.location.href='dashboard.html'">Volver al Dashboard</button></li>
+            <li><button class="btn btn-primary" onclick="window.location.href='clientes.html'">Clientes</button></li>
+            <li><button class="btn btn-primary" onclick="window.location.href='pedidos.html'">Pedidos</button></li>
+            <li><button class="btn btn-secondary" onclick="logout()">Cerrar Sesión</button></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <!-- TARJETA PRINCIPAL -->
+        <div class="welcome-card">
+            <h1>📦 Gestión de Productos</h1>
+            <p>En esta sección puedes gestionar el inventario de productos de tu negocio.</p>
+            
+            <div class="actions">
+                <button class="btn btn-primary" onclick="toggleProductForm()">Nuevo Producto</button>
+                <button class="btn btn-secondary" onclick="loadProducts()">Cargar Productos</button>
+            </div>
+            
+            <!-- FORMULARIO DE NUEVO PRODUCTO -->
+            <div id="productForm" class="product-form">
+                <h3>📝 Nuevo Producto</h3>
+                <form id="newProductForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="productName">Nombre del Producto:</label>
+                            <input type="text" id="productName" name="nombre" class="form-control" placeholder="Ejemplo: Laptop Dell" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="productPrice">Precio:</label>
+                            <input type="number" id="productPrice" name="precio" class="form-control" placeholder="299990" min="0" step="0.01" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="productStock">Stock:</label>
+                            <input type="number" id="productStock" name="stock" class="form-control" placeholder="10" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <!-- Espacio vacío para mantener el layout -->
+                        </div>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="button" class="btn btn-secondary" onclick="toggleProductForm()">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Producto</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- TARJETA DE LISTADO -->
+        <div class="welcome-card">
+            <h2>📋 Lista de Productos</h2>
+            <div id="productsList" class="products-list">
+                <!-- Aquí se mostrarán los productos -->
+                <div class="empty-state">
+                    <div class="empty-state-icon">📦</div>
+                    <p>No hay productos para mostrar</p>
+                    <button class="btn btn-primary" onclick="loadProducts()">Cargar Productos</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- SCRIPTS -->
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/productos.js"></script>
 </body>
 </html>

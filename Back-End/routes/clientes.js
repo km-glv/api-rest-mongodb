@@ -1,15 +1,15 @@
-import { Router } from 'express'; //Router es una variable que maneja rutas, así no trae todo Express
-import Cliente from '../models/Cliente.js'; //..sale de la carpeta routes y luego entra en la carpeta models y selecciona Cliente.js
+import { Router } from 'express'; 
+import Cliente from '../models/Cliente.js'; 
 
 const route = Router();
 
 route.post('/', async (req, res)=>{ // POST crea cliente
     const cliente = new Cliente({
-        nombre: req.body.nombre, // saca el nombre del request desde el body del codigo html, y en body selleciona el nombre
+        rut: req.body.rut,
+        nombre: req.body.nombre, 
         apellido: req.body.apellido,
         correo: req.body.correo,
-        telefono: req.body.telefono,
-        direccion: req.body.direccion
+        fechaNace: req.body.fechaNace
     });
     try{
         const nuevoCliente = await cliente.save();
@@ -30,8 +30,8 @@ route.get('/', async (req, res)=>{ //async para que el codigo no trabaje de form
             filtro.apellido = {$regex: req.query.apellido, $options: 'i'}
         }
 
-        if (req.query.email){
-            filtro.email = {$regex: req.query.email, $options: 'i'}
+        if (req.query.correo){
+            filtro.correo = {$regex: req.query.correo, $options: 'i'}
         }
          
         const clientes = await Cliente.find(filtro); //ejecuta un find en la tabla Clientes y lo almaneca en la variable clientes
@@ -42,24 +42,44 @@ route.get('/', async (req, res)=>{ //async para que el codigo no trabaje de form
 });
 
 // obtener cliente por su ID
-route.put('/:id', async (req, res)=>{ // PUT editar cientes
+route.put('/:id', async (req, res)=>{ // PUT editar clientes
     try{
-        const clienteAztualizado = await Cliente.findByIdAndUpdate(
-            req.params.id, // esta mas arriba q body, entonce se llama PARAMETRO
+        console.log('🔄 PUT - Actualizando cliente:', req.params.id);
+        console.log('📝 PUT - Datos recibidos:', req.body);
+        
+        // Validar que el ID sea válido
+        if (!req.params.id || req.params.id.length !== 24) {
+            console.log('❌ PUT - ID inválido:', req.params.id);
+            return res.status(400).json({'message': 'ID de cliente inválido'});
+        }
+        
+        const clienteActualizado = await Cliente.findByIdAndUpdate(
+            req.params.id,
             req.body,
             {new: true, runValidators: true}
         );
-        if (!clienteAztualizado) return res.status(400).json({'message': 'cliente no encontrado'});
-        res.status(200).json({'mensje':error.message});
+        
+        console.log('📊 PUT - Cliente actualizado:', clienteActualizado);
+        
+        if (!clienteActualizado) {
+            console.log('❌ PUT - Cliente no encontrado');
+            return res.status(404).json({'message': 'cliente no encontrado'});
+        }
+        
+        console.log('✅ PUT - Éxito, enviando respuesta');
+        res.status(200).json(clienteActualizado);
     } catch(error){
-        res.status(500).json({'mensje':error.message});
+        console.error('❌ PUT - Error completo:', error);
+        console.error('❌ PUT - Error message:', error.message);
+        console.error('❌ PUT - Error stack:', error.stack);
+        res.status(500).json({'message':error.message});
     }
 });
 
 route.delete('/:id', async (req, res)=>{
     try{
         const clienteEliminado = await Cliente.findByIdAndDelete(req.params.id);
-        if(!clienteEliminado) return res.status(400).json({message:'Cliente no encontrado'});
+        if(!clienteEliminado) return res.status(404).json({message:'Cliente no encontrado'});
         res.status(200).json({message:'Cliente eliminado'});
     } catch (error) {
         res.status(500).json({message:error.message});

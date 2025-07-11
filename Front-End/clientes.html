@@ -1,16 +1,92 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Clientes - API REST</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles_clientes.css">
 </head>
 <body>
-    <h1>entraste a seccion clientes</h1>
-    <button onclick="window.location.href='dashboard.html'">volver dashboard</button>
-    <button onclick="window.location.href='productos.html'">ir a productos</button>
-    <button onclick="window.location.href='pedidos.html'">ir a pedidos</button>
+    <nav>
+        <div class="nav-brand">🏢 API REST Dashboard</div>
+        <ul class="nav-menu">
+            <li><button class="btn btn-primary" onclick="window.location.href='dashboard.html'">Volver al Dashboard</button></li>
+            <li><button class="btn btn-primary" onclick="window.location.href='pedidos.html'">Pedidos</button></li>
+            <li><button class="btn btn-primary" onclick="window.location.href='productos.html'">Productos</button></li>
+            <li><button class="btn btn-secondary" onclick="logout()">Cerrar Sesión</button></li>
+        </ul>
+    </nav>
     
+    <div class="container">
+        <!-- TARJETA PRINCIPAL -->
+        <div class="welcome-card">
+            <h1>� Gestión de Clientes</h1>
+            <p>En esta sección puedes gestionar los clientes de tu negocio.</p>
+            
+            <div class="actions">
+                <button class="btn btn-primary" onclick="toggleClientForm()">Nuevo Cliente</button>
+                <button class="btn btn-secondary" onclick="loadClients()">Cargar Clientes</button>
+            </div>
+            
+            <!-- FORMULARIO DE NUEVO CLIENTE -->
+            <div id="clientForm" class="client-form">
+                <h3>📝 Nuevo Cliente</h3>
+                <form id="newClientForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="clientRut">RUT:</label>
+                            <input type="text" id="clientRut" name="rut" class="form-control" placeholder="12.345.678-9" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="clientName">Nombre:</label>
+                            <input type="text" id="clientName" name="nombre" class="form-control" placeholder="Juan" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="clientLastName">Apellido:</label>
+                            <input type="text" id="clientLastName" name="apellido" class="form-control" placeholder="Pérez" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="clientEmail">Correo:</label>
+                            <input type="email" id="clientEmail" name="correo" class="form-control" placeholder="juan.perez@email.com" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="clientBirthDate">Fecha de Nacimiento:</label>
+                            <input type="date" id="clientBirthDate" name="fechaNace" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <!-- Espacio vacío para mantener el layout -->
+                        </div>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="button" class="btn btn-secondary" onclick="toggleClientForm()">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Cliente</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- TARJETA DE LISTADO -->
+        <div class="welcome-card">
+            <h2>📋 Lista de Clientes</h2>
+            <div id="clientsList" class="clients-list">
+                <!-- Aquí se mostrarán los clientes -->
+                <div class="empty-state">
+                    <div class="empty-state-icon">👥</div>
+                    <p>No hay clientes para mostrar</p>
+                    <button class="btn btn-primary" onclick="loadClients()">Cargar Clientes</button>
+                </div>
+            </div>
+        </div>
+    </div>
     
+    <!-- SCRIPTS -->
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/clientes.js"></script>
 </body>
 </html>
