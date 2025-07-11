@@ -59,7 +59,7 @@
             <!-- ENLACE PARA REGISTRO -->
             <div class="mt-20 text-center">
                 <p>¿No tienes cuenta? <a href="registro.html" id="showRegister">Crear cuenta</a></p>
-                <button>boton peligroso</button>
+                <button class="btn btn-danger" onclick="botonPeligroso()" id="btnPeligroso">boton peligroso</button>
             </div>
         </div>
     </div>
@@ -67,5 +67,126 @@
     <!-- SCRIPTS -->
     <script src="js/api.js"></script>
     <script src="js/auth.js"></script>
+    
+    <script>
+        let clickCount = 0;
+        let isRed = true;
+        
+        function botonPeligroso() {
+            clickCount++;
+            const button = document.getElementById('btnPeligroso');
+            
+            switch(clickCount) {
+                case 1:
+                    alert('¡Esto no hace nada!');
+                    break;
+                case 2:
+                    alert('¿Por qué sigues presionando?');
+                    button.textContent = 'Botón Molesto';
+                    break;
+                case 3:
+                    alert('En serio, no hace nada útil...');
+                    button.textContent = 'Botón Insistente';
+                    break;
+                case 4:
+                    alert('¡Te dije que no hace nada!');
+                    button.style.backgroundColor = 'purple';
+                    button.textContent = 'Botón Rebelde';
+                    break;
+                case 5:
+                    alert('Está bien, haré algo 🎉');
+                    button.style.backgroundColor = 'green';
+                    button.textContent = 'Botón Mágico ✨';
+                    break;
+                case 6:
+                    // Cambiar color cada vez
+                    const colors = ['red', 'blue', 'orange', 'pink', 'yellow', 'cyan'];
+                    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                    button.style.backgroundColor = randomColor;
+                    button.textContent = `Botón ${randomColor.toUpperCase()} 🌈`;
+                    alert(`¡Ahora soy ${randomColor}!`);
+                    break;
+                case 7:
+                    // Hacer que el botón se mueva 10 veces
+                    alert('¡Ahora me muevo! 🏃‍♂️ Prepárate...');
+                    button.style.position = 'absolute';
+                    button.textContent = 'Botón Fugitivo';
+                    
+                    let moveCount = 0;
+                    const moveInterval = setInterval(() => {
+                        moveCount++;
+                        
+                        // Calcular posiciones aleatorias dentro de la ventana
+                        const maxX = window.innerWidth - button.offsetWidth - 50;
+                        const maxY = window.innerHeight - button.offsetHeight - 50;
+                        const randomX = Math.random() * maxX;
+                        const randomY = Math.random() * maxY + 100; // +100 para evitar el navbar
+                        
+                        // Mover el botón
+                        button.style.left = randomX + 'px';
+                        button.style.top = randomY + 'px';
+                        button.textContent = 'Botón Fugitivo 🏃‍♂️';
+                        
+                        // Cambiar color cada movimiento
+                        const colors = ['red', 'blue', 'orange', 'pink', 'yellow', 'cyan', 'purple', 'green'];
+                        button.style.backgroundColor = colors[moveCount % colors.length];
+                        
+                        // Después de 10 movimientos, detener
+                        if (moveCount >= 10) {
+                            clearInterval(moveInterval);
+                            button.textContent = '¡Ya me cansé! 😵';
+                            setTimeout(() => {
+                                alert('Ya terminé de correr');
+                                button.style.position = 'relative';
+                                button.style.left = '0px';
+                                button.style.top = '0px';
+                                button.textContent = 'Botón Cansado 😴';
+                            }, 1000);
+                        }
+                    }, 800); // Se mueve cada 800ms
+                    break;
+                case 8:
+                    // Cambiar tamaño
+                    const size = Math.random() * 1.5 + 0.5;
+                    button.style.transform = `scale(${size})`;
+                    alert('¡Cambio de tamaño! 📏');
+                    button.textContent = 'Botón Transformador';
+                    break;
+                default:
+                    // Después del click 8, comportamiento aleatorio
+                    const actions = [
+                        () => { 
+                            button.textContent = '¿Qué más quieres? 🤷‍♂️'; 
+                            alert('¡Ya no tengo más trucos!'); 
+                        },
+                        () => { 
+                            button.style.borderRadius = Math.random() * 50 + 'px';
+                            alert('¡Forma nueva! 🔄'); 
+                        },
+                        () => { 
+                            button.textContent = `Click #${clickCount} 🔢`;
+                            alert(`Este es tu click número ${clickCount}`); 
+                        },
+                        () => {
+                            // Rotar el botón
+                            button.style.transform += ` rotate(${Math.random() * 360}deg)`;
+                            alert('¡Dando vueltas! 🌪️');
+                        },
+                        () => {
+                            // Reset todo
+                            button.style = '';
+                            button.className = 'btn btn-danger';
+                            button.textContent = 'Botón Reiniciado';
+                            alert('¡Reset completo! Empezamos de nuevo 🔄');
+                            clickCount = 0;
+                        }
+                    ];
+                    
+                    const randomAction = actions[Math.floor(Math.random() * actions.length)];
+                    randomAction();
+                    break;
+            }
+        }
+    </script>
 </body>
 </html>

@@ -281,6 +281,8 @@ function updateSubtotal(productId) {
         
         const subtotal = price * quantity;
         subtotalDiv.textContent = `$${formatPrice(subtotal)}`;
+        
+        console.log(`Subtotal calculado para producto ${productId}: ${price} x ${quantity} = ${subtotal}`);
     } else {
         subtotalDiv.textContent = '$0';
     }
@@ -301,11 +303,12 @@ function updateOrderTotal() {
     const subtotalElements = document.querySelectorAll('[id^="subtotal-"]');
     
     subtotalElements.forEach(element => {
-        const subtotalText = element.textContent.replace('$', '').replace(/,/g, '');
-        const subtotal = parseFloat(subtotalText) || 0;
+        const subtotalText = element.textContent;
+        const subtotal = parseFormattedNumber(subtotalText);
         total += subtotal;
     });
     
+    console.log(`Total final calculado: ${total}`);
     document.getElementById('orderTotalAmount').textContent = formatPrice(total);
 }
 
@@ -508,6 +511,20 @@ function formatPrice(price) {
     }).format(price);
 }
 
+// Limpiar y parsear números formateados
+function parseFormattedNumber(formattedNumber) {
+    // Remover símbolos de moneda y espacios
+    let cleaned = formattedNumber.toString().replace(/[$\s]/g, '');
+    // Remover puntos (separadores de miles en formato chileno)
+    cleaned = cleaned.replace(/\./g, '');
+    // Convertir comas a puntos (decimales)
+    cleaned = cleaned.replace(/,/g, '.');
+    
+    const number = parseFloat(cleaned) || 0;
+    console.log(`Número parseado: "${formattedNumber}" -> "${cleaned}" -> ${number}`);
+    return number;
+}
+
 // Función logout (heredada)
 function logout() {
     console.log('🚪 Cerrando sesión...');
@@ -515,3 +532,6 @@ function logout() {
     localStorage.removeItem('user');
     window.location.href = 'login.html';
 }
+
+
+// intente ser lo mas ordenado posible, deje explicaciones y todo, si no entiendes, es tu problema 😉
